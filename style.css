@@ -68,9 +68,9 @@ body {
 
     padding: 10px 15px;
 
-    background: rgb(0, 0, 0, 0);
+    background: rgb(0, 0, 0, .72);
 
-    border-radius: 22px;
+    border-radius: 0px;
 
     white-space: nowrap;
 
