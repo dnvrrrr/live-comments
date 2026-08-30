@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Comment Box</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="comment-page">
+
+
+    <div class="comment-box">
+
+
+        <h2>
+            💬 Send Comment
+        </h2>
+
+
+        <input
+            id="username"
+            class="input"
+            type="text"
+            placeholder="Enter username"
+            maxlength="30"
+        >
+
+
+        <input
+            id="message"
+            class="input"
+            type="text"
+            placeholder="Write a comment..."
+            maxlength="150"
+        >
+
+
+        <button
+            id="sendComment"
+            class="send">
+
+            Send Comment
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+<!-- Firebase -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+
+import {
+    getDatabase,
+    ref,
+    push,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+
+
+/*
+=========================================
+FIREBASE CONFIGURATION
+=========================================
+
+PASTE YOUR FIREBASE CONFIG HERE
+*/
+
+const firebaseConfig = {
+
+    apiKey: "AIzaSyDiUUYeYdxlVOPzEVjCT0Dp2dX4O97140U",
+
+    authDomain:
+        "live-comment-simulator.firebaseapp.com",
+
+    databaseURL:
+        "https://live-comment-simulator-default-rtdb.firebaseio.com/",
+
+    projectId:
+        "live-comment-simulator",
+
+    storageBucket:
+        "live-comment-simulator.firebasestorage.app",
+
+    messagingSenderId:
+        "728026722349",
+
+    appId:
+        "1:728026722349:web:9aed33fea73839e2a3c8a4"
+
+};
+
+
+
+/*
+=========================================
+INITIALIZE FIREBASE
+=========================================
+*/
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const database =
+    getDatabase(app);
+
+
+
+/*
+=========================================
+COMMENTS DATABASE LOCATION
+=========================================
+*/
+
+const commentsRef =
+    ref(
+        database,
+        "comments"
+    );
+
+
+
+/*
+=========================================
+HTML ELEMENTS
+=========================================
+*/
+
+const username =
+    document.getElementById(
+        "username"
+    );
+
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+const sendButton =
+    document.getElementById(
+        "sendComment"
+    );
+
+
+
+/*
+=========================================
+SEND COMMENT
+=========================================
+*/
+
+async function sendComment() {
+
+    const user =
+        username.value.trim();
+
+
+    const text =
+        message.value.trim();
+
+
+
+    /*
+        Don't send empty comments
+    */
+
+    if (!user || !text) {
+
+        alert(
+            "Please enter a username and comment."
+        );
+
+        return;
+
+    }
+
+
+
+    /*
+        Save comment to Firebase
+    */
+
+    try {
+
+        await push(
+            commentsRef,
+            {
+
+                username: user,
+
+                message: text,
+
+                timestamp:
+                    serverTimestamp()
+
+            }
+        );
+
+
+        /*
+            Clear message
+        */
+
+        message.value = "";
+
+        message.focus();
+
+
+    } catch (error) {
+
+        console.error(
+            "Error sending comment:",
+            error
+        );
+
+
+        alert(
+            "Unable to send comment."
+        );
+
+    }
+
+}
+
+
+
+/*
+=========================================
+BUTTON
+=========================================
+*/
+
+sendButton.addEventListener(
+    "click",
+    sendComment
+);
+
+
+
+/*
+=========================================
+ENTER KEY
+=========================================
+*/
+
+message.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            sendComment();
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
